@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.view.View;
 import android.webkit.WebStorage;
 import android.webkit.WebViewClient;
+import android.content.Context;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -22,6 +23,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import com.tencent.stat.hybrid.StatHybridHandler;
+import android.webkit.JavascriptInterface;
+
+import android.util.Log;
 
 public class FlutterWebView implements PlatformView, MethodCallHandler {
   private static final String JS_CHANNEL_NAMES_FIELD = "javascriptChannelNames";
@@ -29,6 +33,7 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
   private final MethodChannel methodChannel;
   private final FlutterWebViewClient flutterWebViewClient;
   private final Handler platformThreadHandler;
+  private Context mContext;
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
   @SuppressWarnings("unchecked")
@@ -65,6 +70,38 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
       String url = (String) params.get("initialUrl");
       webView.loadUrl(url);
     }
+
+    // 闲玩js调用原生需要
+    mContext = context;
+    webView.addJavascriptInterface(this, "android");
+  }
+
+  @JavascriptInterface
+  public void CheckInstall(String packageName) {
+    Log.i("CheckInstall", packageName);
+    final boolean isInstalled = XWanUtils.isApkInstalled(mContext, packageName);
+    webView.post(new Runnable() {
+      @Override
+      public void run() {
+        String js = "javascript:CheckInstall_Return(" + (isInstalled ? "1)" : "0)");
+        webView.loadUrl(js);
+      }
+    });
+  }
+
+  @JavascriptInterface
+  public void OpenAPP(String packageName){
+    XWanUtils.openApp(mContext, packageName);
+  }
+
+  @JavascriptInterface
+  public void InstallAPP(final String url) {
+    XWanUtils.installAPP(mContext, url);
+  }
+
+  @JavascriptInterface
+  public void Browser(final String url) {
+    XWanUtils.Brower(mContext, url);
   }
 
   @Override
