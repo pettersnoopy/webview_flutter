@@ -5,6 +5,7 @@ import android.app.DownloadManager.Request;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.Uri;
@@ -12,6 +13,7 @@ import android.os.Environment;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 import android.content.Context;
+import com.xianwan.sdklibrary.view.DownLoadReceiver;
 
 import java.io.File;
 import android.util.Log;
@@ -88,8 +90,11 @@ public class DownLoadService extends IntentService {
         request.setDestinationInExternalPublicDir("/51xianwan/", this.apkName);
 
         this.downloadManager = ((DownloadManager) getSystemService("download"));
-
         this.mTaskId = this.downloadManager.enqueue(request);
+        if (WebViewFlutterPlugin.mRegistrar.activity() != null) {
+            WebViewFlutterPlugin.mRegistrar.activity().registerReceiver(new DownLoadReceiver(),
+                    new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        }
 
         SharedPreferences sp = getSharedPreferences("xw", 0);
         sp.edit().putLong("taskid", this.mTaskId).commit();

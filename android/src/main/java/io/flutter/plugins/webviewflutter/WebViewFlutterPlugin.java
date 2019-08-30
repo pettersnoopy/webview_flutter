@@ -9,8 +9,10 @@ import com.tencent.stat.hybrid.StatHybridHandler;
 
 /** WebViewFlutterPlugin */
 public class WebViewFlutterPlugin {
+  public static Registrar mRegistrar;
   /** Plugin registration. */
   public static void registerWith(Registrar registrar) {
+    mRegistrar = registrar;
     registrar
         .platformViewRegistry()
         .registerViewFactory(

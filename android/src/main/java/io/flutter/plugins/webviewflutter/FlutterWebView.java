@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.view.View;
 import android.webkit.WebStorage;
 import android.webkit.WebViewClient;
-import android.content.Context;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import com.tencent.stat.hybrid.StatHybridHandler;
 import android.webkit.JavascriptInterface;
-
 import android.util.Log;
 
 public class FlutterWebView implements PlatformView, MethodCallHandler {
@@ -66,6 +64,10 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
     }
 
     updateAutoMediaPlaybackPolicy((Integer) params.get("autoMediaPlaybackPolicy"));
+    if (params.containsKey("userAgent")) {
+      String userAgent = (String) params.get("userAgent");
+      updateUserAgent(userAgent);
+    }
     if (params.containsKey("initialUrl")) {
       String url = (String) params.get("initialUrl");
       webView.loadUrl(url);
@@ -78,7 +80,6 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
 
   @JavascriptInterface
   public void CheckInstall(String packageName) {
-    Log.i("CheckInstall", packageName);
     final boolean isInstalled = XWanUtils.isApkInstalled(mContext, packageName);
     webView.post(new Runnable() {
       @Override
@@ -231,11 +232,11 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
     webView.evaluateJavascript(
         jsString,
         new android.webkit.ValueCallback<String>() {
-      @Override
-      public void onReceiveValue(String value) {
-        result.success(value);
-      }
-    });
+          @Override
+          public void onReceiveValue(String value) {
+            result.success(value);
+          }
+        });
   }
 
   @SuppressWarnings("unchecked")
@@ -273,12 +274,15 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
               flutterWebViewClient.createWebViewClient(hasNavigationDelegate);
 
         StatHybridHandler.initWebSettings(webView.getSettings());
-        webView.setWebViewClient(webViewClient);
-        break;
-      case "debuggingEnabled":
-        final boolean debuggingEnabled = (boolean) settings.get(key);
+          webView.setWebViewClient(webViewClient);
+          break;
+        case "debuggingEnabled":
+          final boolean debuggingEnabled = (boolean) settings.get(key);
 
           webView.setWebContentsDebuggingEnabled(debuggingEnabled);
+          break;
+        case "userAgent":
+          updateUserAgent((String) settings.get(key));
           break;
         default:
           throw new IllegalArgumentException("Unknown WebView setting: " + key);
@@ -311,6 +315,10 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
       webView.addJavascriptInterface(
           new JavaScriptChannel(methodChannel, channelName, platformThreadHandler), channelName);
     }
+  }
+
+  private void updateUserAgent(String userAgent) {
+    webView.getSettings().setUserAgentString(userAgent);
   }
 
   @Override
