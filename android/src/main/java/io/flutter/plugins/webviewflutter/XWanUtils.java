@@ -102,17 +102,7 @@ class XWanUtils {
                         downloadPath = new StringBuilder().append(Environment.getExternalStorageDirectory().getAbsolutePath()).append(File.separator).append("51xianwan").append(File.separator).append(apkName).toString();
                         File file = new File(downloadPath);
                         if (file.exists()) {
-                            int sdkVersion = context.getApplicationInfo().targetSdkVersion;
-                            if ((sdkVersion >= 26) && (android.os.Build.VERSION.SDK_INT >= 26)) {
-                                boolean b = false;
-                                b = context.getPackageManager().canRequestPackageInstalls();
-                                if (b)
-                                    XWanUtils.installAPK(context, new File(downloadPath), apkName);
-                                else
-                                    ActivityCompat.requestPermissions(WebViewFlutterPlugin.mRegistrar.activity(), new String[] { "android.permission.REQUEST_INSTALL_PACKAGES" }, 101);
-                            } else {
-                                XWanUtils.installAPK(context, new File(downloadPath), apkName);
-                            }
+                            XWanUtils.installAPK(context, new File(downloadPath), apkName);
                         } else {
                             isLoading = false;
                         }
