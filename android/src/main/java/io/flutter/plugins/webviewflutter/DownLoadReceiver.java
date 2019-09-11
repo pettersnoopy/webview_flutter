@@ -1,4 +1,4 @@
-package com.xianwan.sdklibrary.view;
+package io.flutter.plugins.webviewflutter;
 
 import android.app.DownloadManager;
 import android.app.DownloadManager.Query;
@@ -44,7 +44,7 @@ public class DownLoadReceiver extends BroadcastReceiver
         int sdkVersion = context.getApplicationInfo().targetSdkVersion;
         Uri uri;
         if ((android.os.Build.VERSION.SDK_INT >= 24) && (sdkVersion >= 24)) {
-            uri = FileProvider.getUriForFile(context, this.mContext.getApplicationContext().getPackageName() + ".fileProvider", file);
+            uri = FileProvider.getUriForFile(context, this.mContext.getApplicationContext().getPackageName() + ".xWanFileProvider", file);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }

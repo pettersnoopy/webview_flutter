@@ -132,7 +132,7 @@ class XWanUtils {
         Uri uri;
         if ((android.os.Build.VERSION.SDK_INT >= 24) && (sdkVersion >= 24))
         {
-            uri = FileProvider.getUriForFile(context, new StringBuilder().append(context.getPackageName()).append(".fileProvider").toString(), file);
+            uri = FileProvider.getUriForFile(context, new StringBuilder().append(context.getPackageName()).append(".xWanFileProvider").toString(), file);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
@@ -150,9 +150,6 @@ class XWanUtils {
         intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
         intent.addCategory("android.intent.category.DEFAULT");
         intent.setData(Uri.parse("package:" + context.getPackageName()));
-        intent.addFlags(268435456);
-        intent.addFlags(1073741824);
-        intent.addFlags(8388608);
         context.startActivity(intent);
     }
 
