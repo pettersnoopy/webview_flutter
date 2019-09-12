@@ -13,7 +13,6 @@ import android.os.Environment;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 import android.content.Context;
-import com.xianwan.sdklibrary.view.DownLoadReceiver;
 
 import java.io.File;
 import android.util.Log;
