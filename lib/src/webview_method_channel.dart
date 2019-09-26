@@ -36,7 +36,17 @@ class MethodChannelWebViewPlatform implements WebViewPlatformController {
           isForMainFrame: call.arguments['isForMainFrame'],
         );
       case 'onPageFinished':
-        _platformCallbacksHandler.onPageFinished(call.arguments['url']);
+        _platformCallbacksHandler.onPageFinished(
+            call.arguments['url'], call.arguments['height']);
+        return null;
+      case 'onPageScrollTop':
+        _platformCallbacksHandler.onPageScrollTop();
+        return null;
+      case 'onPageScrollBottom':
+        _platformCallbacksHandler.onPageScrollBottom();
+        return null;
+      case 'onPageScrollChanged':
+        _platformCallbacksHandler.onPageScrollChanged();
         return null;
     }
     throw MissingPluginException(

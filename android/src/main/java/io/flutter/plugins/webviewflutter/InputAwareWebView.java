@@ -21,7 +21,7 @@ import android.webkit.WebView;
  *
  * <p>See also {@link ThreadedInputConnectionProxyAdapterView}.
  */
-final class InputAwareWebView extends WebView {
+final class InputAwareWebView extends ScrollWebView {
   private final View containerView;
 
   private View threadedInputConnectionProxyView;

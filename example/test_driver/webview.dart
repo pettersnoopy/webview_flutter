@@ -75,7 +75,7 @@ void main() {
             controllerCompleter.complete(controller);
           },
           javascriptMode: JavascriptMode.unrestricted,
-          onPageFinished: (String url) {
+          onPageFinished: (String url, double height) {
             pageLoads.add(url);
           },
         ),
@@ -123,7 +123,7 @@ void main() {
               },
             ),
           ].toSet(),
-          onPageFinished: (String url) {
+          onPageFinished: (String url, double height) {
             pageLoaded.complete(null);
           },
         ),
@@ -178,7 +178,7 @@ void main() {
           },
         ),
       ].toSet(),
-      onPageFinished: (String url) {
+      onPageFinished: (String url, double height) {
         pageLoaded.complete(null);
       },
       javascriptMode: JavascriptMode.unrestricted,
@@ -356,7 +356,7 @@ void main() {
               controllerCompleter.complete(controller);
             },
             javascriptMode: JavascriptMode.unrestricted,
-            onPageFinished: (String url) {
+            onPageFinished: (String url, double height) {
               pageLoaded.complete(null);
             },
             initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.always_allow,
@@ -383,7 +383,7 @@ void main() {
               controllerCompleter.complete(controller);
             },
             javascriptMode: JavascriptMode.unrestricted,
-            onPageFinished: (String url) {
+            onPageFinished: (String url, double height) {
               pageLoaded.complete(null);
             },
             initialMediaPlaybackPolicy:
@@ -415,7 +415,7 @@ void main() {
               controllerCompleter.complete(controller);
             },
             javascriptMode: JavascriptMode.unrestricted,
-            onPageFinished: (String url) {
+            onPageFinished: (String url, double height) {
               pageLoaded.complete(null);
             },
             initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.always_allow,
@@ -440,7 +440,7 @@ void main() {
               controllerCompleter.complete(controller);
             },
             javascriptMode: JavascriptMode.unrestricted,
-            onPageFinished: (String url) {
+            onPageFinished: (String url, double height) {
               pageLoaded.complete(null);
             },
             initialMediaPlaybackPolicy:

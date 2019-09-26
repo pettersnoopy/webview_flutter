@@ -70,7 +70,13 @@ enum NavigationDecision {
 typedef NavigationDecision NavigationDelegate(NavigationRequest navigation);
 
 /// Signature for when a [WebView] has finished loading a page.
-typedef void PageFinishedCallback(String url);
+typedef void PageFinishedCallback(String url, double height);
+
+typedef void PageScrollBottom();
+
+typedef void PageScrollTop();
+
+typedef void PageScrollChanged();
 
 /// Specifies possible restrictions on automatic media playback.
 ///
@@ -139,6 +145,9 @@ class WebView extends StatefulWidget {
     this.navigationDelegate,
     this.gestureRecognizers,
     this.onPageFinished,
+    this.onPageScrollTop,
+    this.onPageScrollBottom,
+    this.onPageScrollChanged,
     this.debuggingEnabled = false,
     this.userAgent,
     this.initialMediaPlaybackPolicy =
@@ -264,6 +273,10 @@ class WebView extends StatefulWidget {
   /// directly in the HTML has been loaded and code injected with
   /// [WebViewController.evaluateJavascript] can assume this.
   final PageFinishedCallback onPageFinished;
+
+  final PageScrollTop onPageScrollTop;
+  final PageScrollBottom onPageScrollBottom;
+  final PageScrollChanged onPageScrollChanged;
 
   /// Controls whether WebView debugging is enabled.
   ///
@@ -448,9 +461,30 @@ class _PlatformCallbacksHandler implements WebViewPlatformCallbacksHandler {
   }
 
   @override
-  void onPageFinished(String url) {
+  void onPageFinished(String url, double height) {
     if (_widget.onPageFinished != null) {
-      _widget.onPageFinished(url);
+      _widget.onPageFinished(url, height);
+    }
+  }
+
+  @override
+  void onPageScrollTop() {
+    if (_widget.onPageScrollTop != null) {
+      _widget.onPageScrollTop();
+    }
+  }
+
+  @override
+  void onPageScrollBottom() {
+    if (_widget.onPageScrollBottom != null) {
+      _widget.onPageScrollBottom();
+    }
+  }
+
+  @override
+  void onPageScrollChanged() {
+    if (_widget.onPageScrollChanged != null) {
+      _widget.onPageScrollChanged();
     }
   }
 

@@ -17,8 +17,10 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
+import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.platform.PlatformView;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.tencent.stat.hybrid.StatHybridHandler;
@@ -32,6 +34,7 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
   private final FlutterWebViewClient flutterWebViewClient;
   private final Handler platformThreadHandler;
   private Context mContext;
+  private BinaryMessenger mMessenger;
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
   @SuppressWarnings("unchecked")
@@ -41,7 +44,7 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
       int id,
       Map<String, Object> params,
       final View containerView) {
-
+    mMessenger = messenger;
     DisplayListenerProxy displayListenerProxy = new DisplayListenerProxy();
     DisplayManager displayManager =
         (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
@@ -76,6 +79,8 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
     // 闲玩js调用原生需要
     mContext = context;
     webView.addJavascriptInterface(this, "android");
+
+    registerScrollEvent();
   }
 
   @JavascriptInterface
@@ -172,6 +177,25 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
       default:
         result.notImplemented();
     }
+  }
+
+  private void registerScrollEvent() {
+      webView.setOnScrollChangeListener(new ScrollWebView.OnScrollChangeListener() {
+        @Override
+        public void onPageEnd(int l, int t, int oldl, int oldt) {
+          methodChannel.invokeMethod("onPageScrollBottom", new HashMap<>());
+        }
+
+        @Override
+        public void onPageTop(int l, int t, int oldl, int oldt) {
+          methodChannel.invokeMethod("onPageScrollTop", new HashMap<>());
+        }
+
+        @Override
+        public void onScrollChanged(int l, int t, int oldl, int oldt) {
+          methodChannel.invokeMethod("onPageScrollChanged", new HashMap<>());
+        }
+      });
   }
 
   @SuppressWarnings("unchecked")

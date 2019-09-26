@@ -606,7 +606,7 @@ void main() {
 
       await tester.pumpWidget(WebView(
         initialUrl: 'https://youtube.com',
-        onPageFinished: (String url) {
+        onPageFinished: (String url, double height) {
           returnedUrl = url;
         },
       ));
@@ -638,12 +638,12 @@ void main() {
 
       await tester.pumpWidget(WebView(
         initialUrl: 'https://youtube.com',
-        onPageFinished: (String url) {},
+        onPageFinished: (String url, double height) {},
       ));
 
       await tester.pumpWidget(WebView(
         initialUrl: 'https://youtube.com',
-        onPageFinished: (String url) {
+        onPageFinished: (String url, double height) {
           returnedUrl = url;
         },
       ));

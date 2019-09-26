@@ -24,7 +24,13 @@ abstract class WebViewPlatformCallbacksHandler {
   bool onNavigationRequest({String url, bool isForMainFrame});
 
   /// Invoked by [WebViewPlatformController] when a page has finished loading.
-  void onPageFinished(String url);
+  void onPageFinished(String url, double height);
+
+  void onPageScrollTop();
+
+  void onPageScrollBottom();
+
+  void onPageScrollChanged();
 }
 
 /// Interface for talking to the webview's platform implementation.
