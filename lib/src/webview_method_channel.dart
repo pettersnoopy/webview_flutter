@@ -66,6 +66,14 @@ class MethodChannelWebViewPlatform implements WebViewPlatformController {
   }
 
   @override
+  Future<void> scrollBy(int dx, int dy) {
+    return _channel.invokeMethod<void>('scrollBy', <String, dynamic>{
+      'dx': dx,
+      'dy': dy,
+    });
+  }
+
+  @override
   Future<String> currentUrl() => _channel.invokeMethod<String>('currentUrl');
 
   @override

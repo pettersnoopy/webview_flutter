@@ -275,6 +275,7 @@ class WebView extends StatefulWidget {
   final PageFinishedCallback onPageFinished;
 
   final PageScrollTop onPageScrollTop;
+  @deprecated /// 并不准确，建议使用js
   final PageScrollBottom onPageScrollBottom;
   final PageScrollChanged onPageScrollChanged;
 
@@ -535,6 +536,10 @@ class WebViewController {
     assert(url != null);
     _validateUrlString(url);
     return _webViewPlatformController.loadUrl(url, headers);
+  }
+
+  Future<void> scrollBy(int dx, int dy) {
+    return _webViewPlatformController.scrollBy(dx, dy);
   }
 
   /// Accessor to the current URL that the WebView is displaying.

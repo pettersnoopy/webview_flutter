@@ -138,6 +138,9 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
   @Override
   public void onMethodCall(MethodCall methodCall, Result result) {
     switch (methodCall.method) {
+      case "scrollBy":
+        scrollBy(methodCall, result);
+        break;
       case "loadUrl":
         loadUrl(methodCall, result);
         break;
@@ -208,6 +211,16 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
     }
     webView.loadUrl(url, headers);
     result.success(null);
+  }
+
+  private void scrollBy(MethodCall call, Result result) {
+    int dx = call.argument("dx");
+    int dy = call.argument("dy");
+    if (dy < 0) {
+        webView.scrollTo(webView.getScrollX() + dx, Math.max(0, webView.getScrollY() + dy));
+    } else {
+        webView.scrollBy(dx, dy);
+    }
   }
 
   private void canGoBack(Result result) {

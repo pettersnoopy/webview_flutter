@@ -67,6 +67,11 @@ abstract class WebViewPlatformController {
         "WebView loadUrl is not implemented on the current platform");
   }
 
+  Future<void> scrollBy(int dx, int dy) {
+    throw UnimplementedError(
+        "WebView scrollBy is not implemented on the current platform");
+  }
+
   /// Updates the webview settings.
   ///
   /// Any non null field in `settings` will be set as the new setting value.
