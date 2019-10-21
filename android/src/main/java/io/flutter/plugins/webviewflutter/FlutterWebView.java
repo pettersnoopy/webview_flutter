@@ -6,10 +6,14 @@ package io.flutter.plugins.webviewflutter;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.display.DisplayManager;
 import android.os.Build;
 import android.os.Handler;
 import android.view.View;
+import android.view.ViewParent;
+import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebStorage;
 import android.webkit.WebViewClient;
@@ -20,6 +24,8 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.platform.PlatformView;
+
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -115,7 +121,41 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
 
   @Override
   public View getView() {
+    modifyViewBgAndFocusable();
     return webView;
+  }
+
+
+  /**
+   * 通过反射将mContentView背景改为透明，以及移除所在windowManager的FLAG_NOT_FOCUSABLE标记，该标记会导致穿山甲banner类型广告无法曝光
+   */
+  protected void modifyViewBgAndFocusable() {
+    if (webView == null) {
+      return;
+    }
+
+    webView.post(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          ViewParent parent = webView.getParent();
+          if (parent == null) {
+            return;
+          }
+          while (parent.getParent() != null) {
+            parent = parent.getParent();
+          }
+          Object decorView = parent.getClass().getDeclaredMethod("getView").invoke(parent);
+          final Field windowField = decorView.getClass().getDeclaredField("mWindow");
+          windowField.setAccessible(true);
+          final Window window = (Window) windowField.get(decorView);
+          windowField.setAccessible(false);
+          window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        } catch(Exception e) {
+          // log the exception
+        }
+      }
+    });
   }
 
   // @Override
